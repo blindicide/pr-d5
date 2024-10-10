@@ -21,10 +21,9 @@ def generate_systems(num_systems):
                     'size': moon_size
                 }
                 moons.append(moon)
-                # Add stations to moon orbits
-                num_stations = random.randint(0,2) # Up to 2 stations per moon
-                for k in range(num_stations):
-                    station_name = moon_name + f" Station {k+1}"
+                # Add at most one station per moon
+                if random.choice([True, False]): # 50% chance of a station
+                    station_name = moon_name + " Station"
                     stations.append(station_name)
 
 
@@ -37,9 +36,12 @@ def generate_systems(num_systems):
             }
             planets.append(planet)
 
-        # Ensure at least one station per system
-        if not stations:
-            stations.append(random.choice(planets)['moons'][0]['name'] + " Station 1")
+        # Ensure at least one station and at most five stations per system
+        num_additional_stations = random.randint(1,5) - len(stations) # Number of stations needed
+        for k in range(num_additional_stations):
+            if len(stations) < 5: # Only add if there's space
+                station_name = system_name + f" Station {k+1}"
+                stations.append(station_name)
 
         system = {
             'name': system_name,
@@ -98,16 +100,13 @@ def print_unconnected_systems(systems):
 def to_roman(num):
     roman_map = { 1: 'I', 4: 'IV', 5: 'V', 9: 'IX', 10: 'X', 40: 'XL', 50: 'L', 90: 'XC', 100: 'C', 400: 'XD', 500: 'D', 900: 'CM', 1000: 'M'}
 
-    i = 12
     result = ""
-    while num != 0:
-        if list(roman_map.keys())[i] <= num:
-            result += list(roman_map.values())[i]
-            num -= list(roman_map.keys())[i]
-        else:
-            i -= 1
-
+    for value, numeral in sorted(roman_map.items(), reverse=True):
+        while num >= value:
+            result += numeral
+            num -= value
     return result
+
 
 if __name__ == "__main__":
     num_systems_to_generate = 150  # Example: Generate 5 systems

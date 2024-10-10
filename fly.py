@@ -12,6 +12,9 @@ def display_system_info(system):
         print(f"  {planet['name']} (Size: {planet['size']:.1f}, Habitable: {planet['habitable']})")
         for moon in planet['moons']:
             print(f"    Moon: {moon['name']} (Size: {moon['size']:.1f})")
+    print("Stations:")
+    for station in system['stations']:
+        print(f"  {station}")
     print("Connections:")
     for route in system['routes']:
         print(f"  {route}")
